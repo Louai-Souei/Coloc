@@ -34,10 +34,9 @@ public class Logement {
     private int nombrePlaceLibre;
 
     @ManyToOne
+    @JoinColumn(name = "proprietaire_id", nullable = false)
     private User proprietaire;
 
     @OneToMany(mappedBy = "logement", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Colocation> bookings = new ArrayList<>();
-
+    private List<Colocation> colocations = new ArrayList<>();
 }
-

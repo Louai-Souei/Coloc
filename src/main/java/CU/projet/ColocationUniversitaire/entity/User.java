@@ -1,9 +1,5 @@
 package CU.projet.ColocationUniversitaire.entity;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -13,6 +9,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Data
 @Builder
@@ -34,12 +34,16 @@ public class User implements UserDetails {
     private Double budget;
     private String typelogementprefere;
     private String localisationprefere;
+
     @Enumerated(EnumType.STRING)
     private Role role;
     private String password;
 
     @OneToMany(mappedBy = "colocataire", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Colocation> colocations = new ArrayList<>();
+
+    @OneToMany(mappedBy = "proprietaire", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Logement> logements = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
