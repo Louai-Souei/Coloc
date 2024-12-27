@@ -1,11 +1,11 @@
 package CU.projet.ColocationUniversitaire.service.serviceImpl;
 
-import CU.projet.ColocationUniversitaire.dto.AnnonceDto;
-import CU.projet.ColocationUniversitaire.entity.Annonce;
+import CU.projet.ColocationUniversitaire.dto.LogementDto;
+import CU.projet.ColocationUniversitaire.entity.Logement;
 import CU.projet.ColocationUniversitaire.entity.User;
-import CU.projet.ColocationUniversitaire.repository.AnnonceRepository;
+import CU.projet.ColocationUniversitaire.repository.LogementRepository;
 import CU.projet.ColocationUniversitaire.repository.UserRepository;
-import CU.projet.ColocationUniversitaire.service.serviceInterface.AnnonceService;
+import CU.projet.ColocationUniversitaire.service.serviceInterface.LogementService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -14,14 +14,14 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class AnnonceServiceImpl implements AnnonceService {
+public class LogementServiceImpl implements LogementService {
 
-    private final AnnonceRepository annonceRepository;
+    private final LogementRepository logementRepository;
     private final UserRepository userRepository;
 
     @Override
-    public AnnonceDto createNewAnnonce(AnnonceDto annonceDto) {
-        Annonce annonce = annonceDto.DtoToAnnonce();
+    public LogementDto createNewLogement(LogementDto logementDto) {
+        Logement logement = logementDto.DtoToLogement();
 
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
 
@@ -31,11 +31,11 @@ public class AnnonceServiceImpl implements AnnonceService {
             throw new IllegalArgumentException("Utilisateur non trouvé ou non authentifié");
         }
 
-        User colocataire = colocataireOpt.get();
-        annonce.setColocataire(colocataire);
+        User proprietaire = colocataireOpt.get();
+        logement.setProprietaire(proprietaire);
 
-        Annonce savedAnnonce = annonceRepository.save(annonce);
+        Logement savedLogement = logementRepository.save(logement);
 
-        return new AnnonceDto(savedAnnonce);
+        return new LogementDto(savedLogement);
     }
 }

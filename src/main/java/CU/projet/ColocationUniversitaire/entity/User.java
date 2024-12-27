@@ -1,5 +1,6 @@
 package CU.projet.ColocationUniversitaire.entity;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -13,7 +14,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @Builder
 @AllArgsConstructor
@@ -21,6 +21,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "utilisateurs")
 public class User implements UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -37,21 +38,21 @@ public class User implements UserDetails {
     private Role role;
     private String password;
 
+    @OneToMany(mappedBy = "colocataire", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Colocation> colocations = new ArrayList<>();
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // TODO Auto-generated method stub
         return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
     @Override
     public String getPassword() {
-        // TODO Auto-generated method stub
         return password;
     }
 
     @Override
     public String getUsername() {
-        // TODO Auto-generated method stub
         return email;
     }
 
@@ -75,7 +76,3 @@ public class User implements UserDetails {
         return true;
     }
 }
-
-
-
-

@@ -6,33 +6,22 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
-
 @Entity
 @Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Annonce {
+public class Colocation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
-    private String adresse;
-
-    private Double prix;
-
-    private String description;
-
-    private String equipDispo;
-
-    private Date dateDisponibilite;
-
-    private int nombrePlaceLibre;
+    private int id;
 
     @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
     private User colocataire;
 
+    @ManyToOne
+    @JoinColumn(name = "logement_id", nullable = false)
+    private Logement logement;
 }
-
