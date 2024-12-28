@@ -10,12 +10,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDto {
-    int id;
-    private String firstname;
+    private Integer id;
     private String lastname;
+    private String firstname;
     private String photo;
-    private String num_tel;
     private String email;
+    private String numTel;
     private Double budget;
     private String typelogementprefere;
     private String localisationprefere;
@@ -23,11 +23,11 @@ public class UserDto {
 
     public UserDto(User user) {
         this.id = user.getId();
-        this.firstname = user.getFirstname();
         this.lastname = user.getLastname();
+        this.firstname = user.getFirstname();
         this.photo = user.getPhoto();
-        this.num_tel = user.getNum_tel();
         this.email = user.getEmail();
+        this.numTel = user.getNum_tel();
         this.budget = user.getBudget();
         this.typelogementprefere = user.getTypelogementprefere();
         this.localisationprefere = user.getLocalisationprefere();
@@ -36,17 +36,16 @@ public class UserDto {
 
     public User DtoToUser() {
         User user = new User();
-        user.setFirstname(this.firstname);
+        user.setId(this.id);
         user.setLastname(this.lastname);
+        user.setFirstname(this.firstname);
         user.setPhoto(this.photo);
-        user.setNum_tel(this.num_tel);
         user.setEmail(this.email);
+        user.setNum_tel(this.numTel);
         user.setBudget(this.budget);
         user.setTypelogementprefere(this.typelogementprefere);
         user.setLocalisationprefere(this.localisationprefere);
         user.setRole(this.role);
-        user.setRole(role);
         return user;
     }
 }
-

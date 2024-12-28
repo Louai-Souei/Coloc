@@ -5,7 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -18,7 +21,9 @@ public class LogementDto {
     private String equipDispo;
     private Date dateDisponibilite;
     private int nombrePlaceLibre;
+    private boolean disponible;
     private UserDto proprietaire;
+    private List<ColocationDto> colocations;
 
     public LogementDto(Logement logement) {
         this.id = logement.getId();
@@ -28,9 +33,15 @@ public class LogementDto {
         this.equipDispo = logement.getEquipDispo();
         this.dateDisponibilite = logement.getDateDisponibilite();
         this.nombrePlaceLibre = logement.getNombrePlaceLibre();
+        this.disponible = logement.isDisponible();
         this.proprietaire = new UserDto(logement.getProprietaire());
-    }
 
+        this.colocations = (logement.getColocations() != null)
+                ? logement.getColocations().stream()
+                .map(ColocationDto::new)
+                .collect(Collectors.toList())
+                : Collections.emptyList();
+    }
 
     public Logement DtoToLogement() {
         Logement logement = new Logement();
@@ -41,8 +52,10 @@ public class LogementDto {
         logement.setEquipDispo(this.equipDispo);
         logement.setDateDisponibilite(this.dateDisponibilite);
         logement.setNombrePlaceLibre(this.nombrePlaceLibre);
-        if (this.proprietaire != null)
+        logement.setDisponible(this.disponible);
+        if (this.proprietaire != null) {
             logement.setProprietaire(this.proprietaire.DtoToUser());
+        }
         return logement;
     }
 }

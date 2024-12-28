@@ -1,14 +1,13 @@
 package CU.projet.ColocationUniversitaire.entity;
 
 import jakarta.persistence.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,10 +24,13 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     private String lastname;
     private String firstname;
+
     @Column(name = "photo_url")
     private String photo;
+
     private String email;
     private String num_tel;
     private Double budget;
@@ -37,6 +39,7 @@ public class User implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
     private String password;
 
     @OneToMany(mappedBy = "colocataire", cascade = CascadeType.ALL, orphanRemoval = true)

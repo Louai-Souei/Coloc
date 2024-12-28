@@ -1,31 +1,32 @@
 package CU.projet.ColocationUniversitaire.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Colocation {
+public class PartageDepense {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User colocataire;
+    private Double montantPartage;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "logement_id", nullable = false)
-    @JsonBackReference
     private Logement logement;
 
-    private boolean active;
+    @OneToMany(mappedBy = "partageDepense", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Depense> depenses = new ArrayList<>();
+
 }
