@@ -2,13 +2,14 @@ package CU.projet.ColocationUniversitaire.controller;
 
 import CU.projet.ColocationUniversitaire.dto.ApiResponse;
 import CU.projet.ColocationUniversitaire.dto.UserDto;
+import CU.projet.ColocationUniversitaire.entity.User;
 import CU.projet.ColocationUniversitaire.service.serviceInterface.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -18,9 +19,36 @@ public class UserController {
 
     private final UserService userService;
 
+
     @GetMapping("/get-all")
     public ResponseEntity<ApiResponse<List<UserDto>>> getAllUsers() {
         ApiResponse<List<UserDto>> response = userService.getAllUsers();
         return ResponseEntity.ok(response);
     }
+    @GetMapping("/profile")
+    public ResponseEntity<User> getUserProfile() {
+        // Appel du service pour récupérer le profil utilisateur à partir du token
+        User user = userService.getUserProfile();
+        return ResponseEntity.ok(user);
+    }
+
+    @PutMapping("/profile")
+    public ResponseEntity<ApiResponse<UserDto>> updateProfile(
+            @RequestParam("photo") MultipartFile photoFile,
+            @RequestParam("numTel") String numTel,
+            @RequestParam("budget") Double budget,
+            @RequestParam("typelogementprefere") String typelogementprefere,
+            @RequestParam("localisationprefere") String localisationprefere) throws IOException {
+
+        // Créez un UserDto avec les paramètres nécessaires (attention à l'ordre et aux types)
+        UserDto updatedUserDto = new UserDto(numTel, budget, typelogementprefere, localisationprefere);
+
+        // Appelez la méthode du service pour mettre à jour le profil de l'utilisateur
+        ApiResponse<UserDto> response = userService.updateUserProfile(updatedUserDto, photoFile);
+
+        // Retourner la réponse API
+        return ResponseEntity.ok(response);
+    }
+
+
 }

@@ -33,6 +33,12 @@ public class UserDto {
         this.localisationprefere = user.getLocalisationprefere();
         this.role = user.getRole();
     }
+    public UserDto(String numTel, Double budget, String typelogementprefere, String localisationprefere) {
+        this.numTel = numTel;
+        this.budget = budget;
+        this.typelogementprefere = typelogementprefere;
+        this.localisationprefere = localisationprefere;
+    }
 
     public User DtoToUser() {
         User user = new User();

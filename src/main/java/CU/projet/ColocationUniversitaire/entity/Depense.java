@@ -1,5 +1,6 @@
 package CU.projet.ColocationUniversitaire.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,9 +28,11 @@ public class Depense {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "colocataire_id", nullable = false)
+    @JsonBackReference
     private User colocataire;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "partage_depense_id", nullable = false)
     private PartageDepense partageDepense;
+
 }
