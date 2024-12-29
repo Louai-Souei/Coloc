@@ -28,6 +28,7 @@ public class Logement {
     private String equipDispo;
     private Date dateDisponibilite;
     private int nombrePlaceLibre;
+
     private boolean disponible;
 
     @ManyToOne
@@ -40,4 +41,9 @@ public class Logement {
     @OneToMany(mappedBy = "logement", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<Depense> depenses = new ArrayList<>();
+
+    @PrePersist
+    public void prePersist() {
+        this.disponible = true;
+    }
 }

@@ -19,6 +19,8 @@ public class Depense {
 
     private Double montant;
 
+    private boolean paye;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "logement_id", nullable = false)
     private Logement logement;
