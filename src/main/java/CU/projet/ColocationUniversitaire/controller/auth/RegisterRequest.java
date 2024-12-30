@@ -1,5 +1,6 @@
 package CU.projet.ColocationUniversitaire.controller.auth;
 
+import CU.projet.ColocationUniversitaire.entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,5 +16,6 @@ public class RegisterRequest {
 	private String lastname;
 	private String email;
 	private String password;
-	
+	private Role role;
+
 }

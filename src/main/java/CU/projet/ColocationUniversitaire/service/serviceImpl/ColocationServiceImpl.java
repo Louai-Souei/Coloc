@@ -32,20 +32,16 @@ public class ColocationServiceImpl implements ColocationService {
         Optional<User> colocataireOpt = userRepository.findByEmail(username);
         User colocataire = colocataireOpt.orElseThrow(() -> new RuntimeException("Utilisateur actif introuvable."));
 
-
         Logement logementExistant = logementRepository.findById(logementId)
                 .orElseThrow(() -> new RuntimeException("Le logement avec l'ID " + logementId + " n'existe pas."));
-
 
         if (!logementExistant.isDisponible()) {
             return new ApiResponse<>("Le logement n'est pas disponible.", null);
         }
 
-
         long nombreColocationsActives = logementExistant.getColocations().stream()
                 .filter(Colocation::isActive)
                 .count();
-
 
         Colocation colocation = new Colocation();
         colocation.setColocataire(colocataire);
@@ -54,13 +50,19 @@ public class ColocationServiceImpl implements ColocationService {
 
         colocationRepository.save(colocation);
 
-        if (nombreColocationsActives == logementExistant.getNombrePlaceLibre() - 1) {
+        // Décrémentez le nombre de places libres
+        logementExistant.setNombrePlaceLibre(logementExistant.getNombrePlaceLibre() - 1);
+
+        // Vérifiez si le logement devient indisponible
+        if (logementExistant.getNombrePlaceLibre() == 0) {
             logementExistant.setDisponible(false);
-            logementRepository.save(logementExistant);
         }
+
+        logementRepository.save(logementExistant);
 
         return new ApiResponse<>("Colocation ajoutée avec succès.", null);
     }
+
 
     @Override
     public ApiResponse<List<ColocationDto>> getHistoriqueColocations() {

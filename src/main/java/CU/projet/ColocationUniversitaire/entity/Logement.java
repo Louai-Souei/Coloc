@@ -27,6 +27,8 @@ public class Logement {
     private String description;
     private String equipDispo;
     private Date dateDisponibilite;
+    @ElementCollection
+    private List<String> photoUrls = new ArrayList<>();
     private int nombrePlaceLibre;
 
     private boolean disponible;

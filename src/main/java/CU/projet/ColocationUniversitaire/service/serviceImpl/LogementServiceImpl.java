@@ -9,11 +9,17 @@ import CU.projet.ColocationUniversitaire.service.serviceInterface.LogementServic
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.io.File;
 
 @Service
 @RequiredArgsConstructor
@@ -22,10 +28,24 @@ public class LogementServiceImpl implements LogementService {
     private final LogementRepository logementRepository;
     private final UserRepository userRepository;
 
+    private String savePhoto(MultipartFile photo, String uploadDir) throws IOException {
+        File directory = new File(uploadDir);
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+        String fileName = System.currentTimeMillis() + "_" + photo.getOriginalFilename();
+        Path filePath = Paths.get(uploadDir, fileName);
+
+        Files.copy(photo.getInputStream(), filePath);
+
+        return "/images/" + fileName;
+    }
     @Override
-    public LogementDto createNewLogement(LogementDto logementDto) {
+    public LogementDto createNewLogement(LogementDto logementDto, List<MultipartFile> photos) throws IOException {
+        // Convertir le DTO en entité Logement
         Logement logement = logementDto.DtoToLogement();
 
+        // Récupérer l'utilisateur authentifié
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<User> colocataireOpt = userRepository.findByEmail(username);
 
@@ -36,6 +56,20 @@ public class LogementServiceImpl implements LogementService {
         User proprietaire = colocataireOpt.get();
         logement.setProprietaire(proprietaire);
 
+        // Traiter et stocker les fichiers photo
+        String uploadDir = System.getProperty("user.dir") + "/src/main/resources/images";
+        List<String> photoUrls = photos.stream()
+                .map(photo -> {
+                    try {
+                        return savePhoto(photo, uploadDir);
+                    } catch (IOException e) {
+                        throw new RuntimeException("Erreur lors du stockage de la photo", e);
+                    }
+                })
+                .collect(Collectors.toList());
+        logement.setPhotoUrls(photoUrls);
+
+        // Sauvegarder le logement
         Logement savedLogement = logementRepository.save(logement);
 
         return new LogementDto(savedLogement);
@@ -93,15 +127,18 @@ public class LogementServiceImpl implements LogementService {
         logementRepository.delete(logementOpt.get());
     }
 
-     @Override
-    public List<LogementDto> filterLogements(Date dateDisponibilite, int nombrePlaceLibre) {
+    @Override
+    public List<LogementDto> filterLogements(Double prix, String adresse, String equipDispo) {
         List<Logement> logements = logementRepository.findAll();
         return logements.stream()
-                .filter(logement -> logement.getDateDisponibilite().after(dateDisponibilite) &&
-                        logement.getNombrePlaceLibre() >= nombrePlaceLibre)
+                .filter(logement -> logement.isDisponible() && // Logement disponible
+                        (prix == null || logement.getPrix().equals(prix)) && // Filtrer par prix si fourni
+                        (adresse == null || logement.getAdresse().contains(adresse)) && // Filtrer par adresse si fourni
+                        (equipDispo == null || logement.getEquipDispo().contains(equipDispo))) // Filtrer par equipDispo si fourni
                 .map(LogementDto::new)
                 .collect(Collectors.toList());
     }
+
 
     @Override
     public List<LogementDto> getLogementsByLocalisation(String localisation) {

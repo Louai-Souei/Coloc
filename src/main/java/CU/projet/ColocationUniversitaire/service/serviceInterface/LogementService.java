@@ -1,13 +1,15 @@
 package CU.projet.ColocationUniversitaire.service.serviceInterface;
 
 import CU.projet.ColocationUniversitaire.dto.LogementDto;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
 public interface LogementService {
 
-    LogementDto createNewLogement(LogementDto logementDto);
+    LogementDto createNewLogement(LogementDto logementDto, List<MultipartFile> photos) throws IOException;
 
     List<LogementDto> getAllAvailableLogements();
 
@@ -17,7 +19,7 @@ public interface LogementService {
 
     void deleteLogement(Integer id);
 
-    List<LogementDto> filterLogements(Date dateDisponibilite, int nombrePlaceLibre);
+    List<LogementDto> filterLogements(Double prix, String adresse, String equipDispo);
 
     List<LogementDto> getLogementsByLocalisation(String localisation);
 }

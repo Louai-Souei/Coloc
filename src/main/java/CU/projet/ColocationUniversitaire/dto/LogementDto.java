@@ -24,6 +24,7 @@ public class LogementDto {
     private boolean disponible;
     private UserDto proprietaire;
     private List<ColocationDto> colocations;
+    private List<String> photoUrls;
 
     public LogementDto(Logement logement) {
         this.id = logement.getId();
@@ -41,6 +42,7 @@ public class LogementDto {
                 .map(ColocationDto::new)
                 .collect(Collectors.toList())
                 : Collections.emptyList();
+        this.photoUrls = logement.getPhotoUrls();
     }
 
     public Logement DtoToLogement() {
@@ -56,6 +58,7 @@ public class LogementDto {
         if (this.proprietaire != null) {
             logement.setProprietaire(this.proprietaire.DtoToUser());
         }
+        logement.setPhotoUrls(this.photoUrls);
         return logement;
     }
 }
