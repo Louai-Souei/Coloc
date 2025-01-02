@@ -1,5 +1,6 @@
 package CU.projet.ColocationUniversitaire.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -42,9 +43,11 @@ public class User implements UserDetails {
 
     private String password;
 
+    @JsonManagedReference
+
     @OneToMany(mappedBy = "colocataire", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Colocation> colocations = new ArrayList<>();
-
+    @JsonManagedReference
     @OneToMany(mappedBy = "proprietaire", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Logement> logements = new ArrayList<>();
 

@@ -1,5 +1,6 @@
 package CU.projet.ColocationUniversitaire.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -35,6 +36,8 @@ public class Logement {
 
     @ManyToOne
     @JoinColumn(name = "proprietaire_id", nullable = false)
+    @JsonBackReference
+
     private User proprietaire;
 
     @OneToMany(mappedBy = "logement", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -20,6 +20,7 @@ public class Colocation {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonBackReference
     private User colocataire;
 
     @ManyToOne
