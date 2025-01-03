@@ -34,11 +34,12 @@ public class UserController {
 
     @PutMapping("/profile")
     public ResponseEntity<ApiResponse<UserDto>> updateProfile(
-            @RequestParam("photo") MultipartFile photoFile,
-            @RequestParam("numTel") String numTel,
-            @RequestParam("budget") Double budget,
-            @RequestParam("typelogementprefere") String typelogementprefere,
-            @RequestParam("localisationprefere") String localisationprefere) throws IOException {
+            @RequestPart(value = "photo", required = false) MultipartFile photoFile,
+            @RequestParam(value = "numTel", required = false) String numTel,
+            @RequestParam(value = "budget", required = false) Double budget,
+            @RequestParam(value = "typelogementprefere", required = false) String typelogementprefere,
+            @RequestParam(value = "localisationprefere", required = false) String localisationprefere
+    ) throws IOException {
 
         // Créez un UserDto avec les paramètres nécessaires (attention à l'ordre et aux types)
         UserDto updatedUserDto = new UserDto(numTel, budget, typelogementprefere, localisationprefere);
