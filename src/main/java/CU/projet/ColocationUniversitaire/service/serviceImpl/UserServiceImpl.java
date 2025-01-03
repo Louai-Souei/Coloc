@@ -13,9 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,7 +38,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
 
         if (photoFile != null && !photoFile.isEmpty()) {
-            String photoName = photoFile.getOriginalFilename();
+/*            String photoName = photoFile.getOriginalFilename();
 
             String uploadDir = System.getProperty("user.dir") + "/src/main/resources/images";
             Path filePath = Paths.get(uploadDir, photoName);
@@ -50,7 +47,10 @@ public class UserServiceImpl implements UserService {
 
             Files.write(filePath, photoFile.getBytes());
 
-            existingUser.setPhoto(photoName);
+            existingUser.setPhoto(photoName);*/
+
+            existingUser.setPhoto(photoFile.getBytes());
+
         }
 
         if (updatedUserDto.getNumTel() != null && !updatedUserDto.getNumTel().isEmpty()) {

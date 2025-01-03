@@ -29,8 +29,9 @@ public class User implements UserDetails {
     private String lastname;
     private String firstname;
 
-    @Column(name = "photo_url")
-    private String photo;
+    @Lob
+    @Column(name = "photo_url", length = 1000000)
+    private byte[] photo;
 
     private String email;
     private String num_tel;

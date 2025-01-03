@@ -13,7 +13,7 @@ public class UserDto {
     private Integer id;
     private String lastname;
     private String firstname;
-    private String photo;
+    private byte[] photo;
     private String email;
     private String numTel;
     private Double budget;
