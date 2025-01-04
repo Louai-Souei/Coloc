@@ -56,7 +56,7 @@ public class SecurityConfiguration {public static final String[] WHITE_LIST_URL 
 	@Bean
 	CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
-		configuration.setAllowedOrigins(List.of("http://localhost:4200",  "https://66b4-197-244-202-234.ngrok-free.app"));
+		configuration.setAllowedOrigins(List.of("http://localhost:4200"));
 		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 		configuration.setAllowedHeaders(List.of("*"));
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
