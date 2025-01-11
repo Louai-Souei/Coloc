@@ -2,6 +2,7 @@ package CU.projet.ColocationUniversitaire.service.serviceImpl;
 
 import CU.projet.ColocationUniversitaire.dto.ApiResponse;
 import CU.projet.ColocationUniversitaire.dto.UserDto;
+import CU.projet.ColocationUniversitaire.dto.UserSearchCriteria;
 import CU.projet.ColocationUniversitaire.entity.Role;
 import CU.projet.ColocationUniversitaire.entity.User;
 import CU.projet.ColocationUniversitaire.repository.UserRepository;
@@ -31,6 +32,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
     }
     @Override
+
     public ApiResponse<UserDto> updateUserProfile(UserDto updatedUserDto, MultipartFile photoFile) throws IOException {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
@@ -38,19 +40,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
 
         if (photoFile != null && !photoFile.isEmpty()) {
-/*            String photoName = photoFile.getOriginalFilename();
-
-            String uploadDir = System.getProperty("user.dir") + "/src/main/resources/images";
-            Path filePath = Paths.get(uploadDir, photoName);
-
-            Files.createDirectories(filePath.getParent());
-
-            Files.write(filePath, photoFile.getBytes());
-
-            existingUser.setPhoto(photoName);*/
-
             existingUser.setPhoto(photoFile.getBytes());
-
         }
 
         if (updatedUserDto.getNumTel() != null && !updatedUserDto.getNumTel().isEmpty()) {
@@ -64,6 +54,18 @@ public class UserServiceImpl implements UserService {
         }
         if (updatedUserDto.getLocalisationprefere() != null && !updatedUserDto.getLocalisationprefere().isEmpty()) {
             existingUser.setLocalisationprefere(updatedUserDto.getLocalisationprefere());
+        }
+        if (updatedUserDto.getAge() != null) {
+            existingUser.setAge(updatedUserDto.getAge());
+        }
+        if (updatedUserDto.getSexe() != null && !updatedUserDto.getSexe().isEmpty()) {
+            existingUser.setSexe(updatedUserDto.getSexe());
+        }
+        if (updatedUserDto.getFumeur() != null) {
+            existingUser.setFumeur(updatedUserDto.getFumeur());
+        }
+        if (updatedUserDto.getAnimauxAcceptes() != null) {
+            existingUser.setAnimauxAcceptes(updatedUserDto.getAnimauxAcceptes());
         }
 
         userRepository.save(existingUser);
@@ -83,4 +85,49 @@ public class UserServiceImpl implements UserService {
 
         return new ApiResponse<>("Utilisateurs récupérés avec succès", userDtos);
     }
+
+    @Override
+    public ApiResponse<List<UserDto>> searchUsers(UserSearchCriteria criteria) {
+        List<User> users = userRepository.findUsersByCriteria(
+                criteria.getAgeMin(),
+                criteria.getAgeMax(),
+                criteria.getSexe(),
+                criteria.getBudgetMin(),
+                criteria.getBudgetMax(),
+                criteria.getFumeur(),
+                criteria.getAnimauxAcceptes()
+        );
+
+        List<UserDto> userDtos = users.stream()
+                .map(UserDto::new)
+                .collect(Collectors.toList());
+
+        return new ApiResponse<>("Utilisateurs filtrés avec succès", userDtos);
+    }
+    @Override
+    public UserDto deleteUser(Integer id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
+
+        // Convertir l'utilisateur en UserDto avant suppression
+        UserDto deletedUserDto = new UserDto(user);
+
+        // Supprimer l'utilisateur
+        userRepository.delete(user);
+
+        // Retourner le DTO de l'utilisateur supprimé
+        return deletedUserDto;
+    }
+    @Override
+    public ApiResponse<UserDto> addUser(UserDto userDto) {
+        User user = userDto.DtoToUser();
+        user = userRepository.save(user);
+        UserDto savedUserDto = new UserDto(user);
+        return new ApiResponse<>("Utilisateur créé avec succès", savedUserDto);
+    }
+
+
+
+
+
 }

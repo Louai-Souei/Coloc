@@ -20,6 +20,7 @@ public class CorsConfig {
                 log.info("Configuring CORS settings...");
 
                 registry.addMapping("/**")
+
                         .allowedOrigins("http://localhost:4200")
                         .allowedMethods(HttpMethod.GET.name(),
                                 HttpMethod.POST.name(),
@@ -28,6 +29,7 @@ public class CorsConfig {
                                 HttpMethod.PATCH.name())
                         .allowedHeaders(HttpHeaders.CONTENT_TYPE,
                                 HttpHeaders.AUTHORIZATION);
+
 
                 log.info("CORS settings configured successfully.");
             }
