@@ -2,10 +2,12 @@ package CU.projet.ColocationUniversitaire.controller;
 
 import CU.projet.ColocationUniversitaire.dto.ApiResponse;
 import CU.projet.ColocationUniversitaire.dto.UserDto;
+import CU.projet.ColocationUniversitaire.dto.UserSearchCriteria;
 import CU.projet.ColocationUniversitaire.entity.User;
 import CU.projet.ColocationUniversitaire.service.serviceInterface.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,11 +22,19 @@ public class UserController {
     private final UserService userService;
 
 
+    @PostMapping("/addUser")
+    public ResponseEntity<ApiResponse<UserDto>> addUser(@RequestBody UserDto userDto) {
+        System.out.println("Received userDto: " + userDto);
+        ApiResponse<UserDto> response = userService.addUser(userDto);
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/get-all")
     public ResponseEntity<ApiResponse<List<UserDto>>> getAllUsers() {
         ApiResponse<List<UserDto>> response = userService.getAllUsers();
         return ResponseEntity.ok(response);
     }
+
     @GetMapping("/profile")
     public ResponseEntity<User> getUserProfile() {
         // Appel du service pour récupérer le profil utilisateur à partir du token
@@ -38,11 +48,23 @@ public class UserController {
             @RequestParam(value = "numTel", required = false) String numTel,
             @RequestParam(value = "budget", required = false) Double budget,
             @RequestParam(value = "typelogementprefere", required = false) String typelogementprefere,
-            @RequestParam(value = "localisationprefere", required = false) String localisationprefere
+            @RequestParam(value = "localisationprefere", required = false) String localisationprefere,
+            @RequestParam(value = "age", required = false) Integer age,
+            @RequestParam(value = "sexe", required = false) String sexe,
+            @RequestParam(value = "fumeur", required = false) Boolean fumeur,
+            @RequestParam(value = "animauxAcceptes", required = false) Boolean animauxAcceptes
     ) throws IOException {
 
-        // Créez un UserDto avec les paramètres nécessaires (attention à l'ordre et aux types)
-        UserDto updatedUserDto = new UserDto(numTel, budget, typelogementprefere, localisationprefere);
+        // Créez un UserDto avec les paramètres nécessaires
+        UserDto updatedUserDto = new UserDto();
+        updatedUserDto.setNumTel(numTel);
+        updatedUserDto.setBudget(budget);
+        updatedUserDto.setTypelogementprefere(typelogementprefere);
+        updatedUserDto.setLocalisationprefere(localisationprefere);
+        updatedUserDto.setAge(age);
+        updatedUserDto.setSexe(sexe);
+        updatedUserDto.setFumeur(fumeur);
+        updatedUserDto.setAnimauxAcceptes(animauxAcceptes);
 
         // Appelez la méthode du service pour mettre à jour le profil de l'utilisateur
         ApiResponse<UserDto> response = userService.updateUserProfile(updatedUserDto, photoFile);
@@ -50,6 +72,37 @@ public class UserController {
         // Retourner la réponse API
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse<List<UserDto>>> searchUsers(
+            @RequestParam(required = false) Integer ageMin,
+            @RequestParam(required = false) Integer ageMax,
+            @RequestParam(required = false) String sexe,
+            @RequestParam(required = false) Boolean fumeur,
+            @RequestParam(required = false) Boolean animauxAcceptes,
+            @RequestParam(required = false) Double budgetMin,
+            @RequestParam(required = false) Double budgetMax,
+            @RequestParam(required = false) String typelogementprefere,
+            @RequestParam(required = false) String localisationprefere
+    ) {
+        // Construire l'objet UserSearchCriteria
+        UserSearchCriteria criteria = new UserSearchCriteria(
+                ageMin, ageMax, sexe, fumeur, animauxAcceptes, budgetMin, budgetMax, typelogementprefere, localisationprefere
+        );
+
+        // Appeler le service
+        ApiResponse<List<UserDto>> response = userService.searchUsers(criteria);
+
+        // Retourner la réponse
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<UserDto> deleteUser(@PathVariable Integer id) {
+        UserDto deletedUser = userService.deleteUser(id);
+        return ResponseEntity.ok(deletedUser);
+    }
+
 
 
 }

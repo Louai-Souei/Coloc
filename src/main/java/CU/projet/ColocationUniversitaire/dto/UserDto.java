@@ -20,6 +20,10 @@ public class UserDto {
     private String typelogementprefere;
     private String localisationprefere;
     private Role role;
+    private Integer age;
+    private String sexe;
+    private Boolean fumeur;
+    private Boolean animauxAcceptes;
 
     public UserDto(User user) {
         this.id = user.getId();
@@ -32,7 +36,12 @@ public class UserDto {
         this.typelogementprefere = user.getTypelogementprefere();
         this.localisationprefere = user.getLocalisationprefere();
         this.role = user.getRole();
+        this.age = user.getAge(); // Ajouté
+        this.sexe = user.getSexe(); // Ajouté
+        this.fumeur = user.getFumeur(); // Ajouté
+        this.animauxAcceptes = user.getAnimauxAcceptes(); // Ajouté
     }
+
     public UserDto(String numTel, Double budget, String typelogementprefere, String localisationprefere) {
         this.numTel = numTel;
         this.budget = budget;
@@ -52,6 +61,11 @@ public class UserDto {
         user.setTypelogementprefere(this.typelogementprefere);
         user.setLocalisationprefere(this.localisationprefere);
         user.setRole(this.role);
+        user.setAge(this.age); // Ajouté
+        user.setSexe(this.sexe); // Ajouté
+        user.setFumeur(this.fumeur); // Ajouté
+        user.setAnimauxAcceptes(this.animauxAcceptes); // Ajouté
         return user;
     }
+
 }

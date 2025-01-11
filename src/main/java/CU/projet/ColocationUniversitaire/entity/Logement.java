@@ -33,6 +33,7 @@ public class Logement {
     private int nombrePlaceLibre;
 
     private boolean disponible;
+    private Boolean active = true;
 
     @ManyToOne
     @JoinColumn(name = "proprietaire_id", nullable = false)

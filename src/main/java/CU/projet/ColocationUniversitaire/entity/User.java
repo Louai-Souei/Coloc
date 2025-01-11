@@ -38,6 +38,10 @@ public class User implements UserDetails {
     private Double budget;
     private String typelogementprefere;
     private String localisationprefere;
+    private Integer age;
+    private String sexe;
+    private Boolean fumeur;
+    private Boolean animauxAcceptes;
 
     @Enumerated(EnumType.STRING)
     private Role role;
