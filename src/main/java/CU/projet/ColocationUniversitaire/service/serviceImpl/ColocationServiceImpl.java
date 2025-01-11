@@ -2,6 +2,7 @@ package CU.projet.ColocationUniversitaire.service.serviceImpl;
 
 import CU.projet.ColocationUniversitaire.dto.ApiResponse;
 import CU.projet.ColocationUniversitaire.dto.ColocationDto;
+import CU.projet.ColocationUniversitaire.dto.UserDto;
 import CU.projet.ColocationUniversitaire.entity.Colocation;
 import CU.projet.ColocationUniversitaire.entity.Logement;
 import CU.projet.ColocationUniversitaire.entity.User;
@@ -13,7 +14,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -65,22 +68,69 @@ public class ColocationServiceImpl implements ColocationService {
 
 
     @Override
-    public ApiResponse<List<ColocationDto>> getHistoriqueColocations() {
-
+    public ApiResponse<List<Map<String, Object>>> getHistoriqueColocations() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<User> colocataireOpt = userRepository.findByEmail(username);
         User colocataire = colocataireOpt.orElseThrow(() -> new RuntimeException("Utilisateur actif introuvable."));
 
-
+        // Récupération des colocations
         List<Colocation> colocations = colocationRepository.findByColocataire(colocataire);
 
+        // Construire une réponse enrichie
+        List<Map<String, Object>> result = colocations.stream().map(colocation -> {
+            Map<String, Object> enrichedData = new HashMap<>();
 
-        List<ColocationDto> colocationsDto = colocations.stream()
-                .map(ColocationDto::new)
-                .collect(Collectors.toList());
+            // Ajouter les données du DTO
+            enrichedData.put("id", colocation.getId());
+            enrichedData.put("colocataire", new UserDto(colocation.getColocataire()));
+            enrichedData.put("active", colocation.isActive());
+            enrichedData.put("logementId", colocation.getLogement().getId());
 
-        return new ApiResponse<>("Historique des colocations récupéré avec succès.", colocationsDto);
+            // Ajouter les informations détaillées du logement
+            Logement logement = colocation.getLogement();
+            enrichedData.put("logementDetails", Map.of(
+                    "adresse", logement.getAdresse(),
+                    "prix", logement.getPrix(),
+                    "description", logement.getDescription()
+            ));
+
+            // Récupérer la liste des colocataires pour chaque logement
+            List<User> colocataires = colocationRepository.findColocatairesByLogementId(logement.getId());
+
+            // Convertir les colocataires en UserDto
+            List<UserDto> colocatairesDto = colocataires.stream()
+                    .map(UserDto::new)
+                    .collect(Collectors.toList());
+
+            enrichedData.put("colocataires", colocatairesDto);  // Ajouter la liste des colocataires
+
+            return enrichedData;
+        }).collect(Collectors.toList());
+
+        return new ApiResponse<>("Historique des colocations récupéré avec succès.", result);
+    }
+
+    @Override
+    public Optional<Colocation> findByColocataireAndLogementIdAndActiveTrue(User colocataire, Integer logementId) {
+        return colocationRepository.findByColocataireAndLogementIdAndActiveTrue(colocataire, logementId);
+    }
+
+
+    @Override
+    public ApiResponse<String> annulerColocation(Integer logementId) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<User> colocataireOpt = userRepository.findByEmail(username);
+        User colocataire = colocataireOpt.orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
+
+        Optional<Colocation> colocationOpt = colocationRepository.findByColocataireAndLogementIdAndActiveTrue(colocataire, logementId);
+
+        if (colocationOpt.isPresent()) {
+            Colocation colocation = colocationOpt.get();
+            colocation.setActive(false);
+            colocationRepository.save(colocation);
+            return new ApiResponse<String>("La colocation a été annulée avec succès.", null);
+        } else {
+            return new ApiResponse<String>("Aucune colocation active trouvée pour ce logement.", null);
+        }
     }
 }
-
-
