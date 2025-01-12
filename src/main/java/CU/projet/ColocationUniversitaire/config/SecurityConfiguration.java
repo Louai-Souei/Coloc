@@ -23,6 +23,10 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 import java.util.List;
 
+import static CU.projet.ColocationUniversitaire.entity.Role.ADMIN;
+import static CU.projet.ColocationUniversitaire.entity.Role.PROPRIETAIRE;
+
+import org.springframework.http.HttpMethod;
 
 @Configuration
 @EnableWebSecurity
@@ -40,8 +44,8 @@ public class SecurityConfiguration {public static final String[] WHITE_LIST_URL 
 				.authorizeHttpRequests(auth ->
 						auth
 								.requestMatchers(WHITE_LIST_URL).permitAll()
-								/*.requestMatchers("/task/load/all").hasAnyRole(ADMIN.name())
-                                .requestMatchers(HttpMethod.GET, "/task/load/all").hasAnyAuthority(ADMIN_READ.name())*/
+								.requestMatchers(HttpMethod.DELETE, "/logement/**").hasAnyRole(ADMIN.name(), PROPRIETAIRE.name())
+                                //.requestMatchers(HttpMethod.GET, "/task/load/all").hasAnyAuthority(ADMIN_READ.name())
 								.anyRequest().authenticated()
 				)
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)

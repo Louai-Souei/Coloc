@@ -54,7 +54,7 @@ public class JwtService {
 		extraClaims.put("email", user.getEmail()); // Ajouter l'email de l'utilisateur
 		extraClaims.put("firstname", user.getFirstname()); // Ajouter le prénom
 		extraClaims.put("lastname", user.getLastname()); // Ajouter le nom de famille
-		extraClaims.put("photo", user.getPhoto()); // Ajouter l'URL de la photo (si nécessaire)
+		//extraClaims.put("photo", user.getPhoto()); // Ajouter l'URL de la photo (si nécessaire)
 
 		// Générer le token avec les informations supplémentaires
 		return Jwts
