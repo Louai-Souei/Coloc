@@ -5,6 +5,7 @@ import CU.projet.ColocationUniversitaire.service.serviceInterface.LogementServic
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -99,4 +100,13 @@ public class LogementController {
         log.info("Fetching logements by localisation: {}", localisation);
         return logementService.getLogementsByLocalisation(localisation);
     }
+
+    @GetMapping("/by-owner")
+    public List<LogementDto> getLogementsByOwner(Authentication authentication) {
+        String ownerEmail = authentication.getName();
+        return logementService.findByOwnerEmail(ownerEmail);
+    }
+
+
+
 }

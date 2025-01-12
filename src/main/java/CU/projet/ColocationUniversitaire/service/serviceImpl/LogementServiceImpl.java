@@ -102,6 +102,16 @@ public class LogementServiceImpl implements LogementService {
         return new LogementDto(logementOpt.get());
     }
 
+    @Override
+    public List<LogementDto> findByOwnerEmail(String email) {
+        List<Logement> logements = logementRepository.findByProprietaire_Email(email);
+
+        return logements.stream()
+                .map(LogementDto::new)
+                .collect(Collectors.toList());
+    }
+
+
 
     @Override
     public LogementDto updateLogement(Integer id, LogementDto logementDto) {

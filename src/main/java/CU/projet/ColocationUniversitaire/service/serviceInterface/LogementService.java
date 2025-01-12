@@ -22,6 +22,7 @@ public interface LogementService {
     List<LogementDto> filterLogements(Double prix, String adresse, String equipDispo);
 
     public List<LogementDto> getAllLogements();
+    List<LogementDto> findByOwnerEmail(String email);
 
 
     List<LogementDto> getLogementsByLocalisation(String localisation);
