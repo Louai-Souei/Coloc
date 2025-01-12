@@ -43,26 +43,23 @@ public class JwtService {
 			Map<String, Object> extraClaims,
 			UserDetails userDetails
 	) {
-		// Récupérer l'utilisateur à partir de son nom d'utilisateur (email)
 		String username = userDetails.getUsername();
 		User user = userRepository.findByEmail(username)
 				.orElseThrow(() -> new RuntimeException("Utilisateur non trouvé"));
 
-		// Ajouter les informations dans extraClaims
 		extraClaims.put("userId", user.getId());
-		extraClaims.put("role", user.getRole().name()); // Ajouter le rôle de l'utilisateur
-		extraClaims.put("email", user.getEmail()); // Ajouter l'email de l'utilisateur
-		extraClaims.put("firstname", user.getFirstname()); // Ajouter le prénom
-		extraClaims.put("lastname", user.getLastname()); // Ajouter le nom de famille
-		//extraClaims.put("photo", user.getPhoto()); // Ajouter l'URL de la photo (si nécessaire)
+		extraClaims.put("role", user.getRole().name());
+		extraClaims.put("email", user.getEmail());
+		extraClaims.put("firstname", user.getFirstname());
+		extraClaims.put("lastname", user.getLastname());
+		//extraClaims.put("photo", user.getPhoto());
 
-		// Générer le token avec les informations supplémentaires
 		return Jwts
 				.builder()
 				.setClaims(extraClaims)
-				.setSubject(userDetails.getUsername()) // Sujet = email de l'utilisateur
+				.setSubject(userDetails.getUsername())
 				.setIssuedAt(new Date(System.currentTimeMillis()))
-				.setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 72)) // Expiration de 72 heures
+				.setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 72))
 				.signWith(getSignInKey(), SignatureAlgorithm.HS256)
 				.compact();
 	}

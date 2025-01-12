@@ -109,13 +109,10 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
 
-        // Convertir l'utilisateur en UserDto avant suppression
         UserDto deletedUserDto = new UserDto(user);
 
-        // Supprimer l'utilisateur
         userRepository.delete(user);
 
-        // Retourner le DTO de l'utilisateur supprimé
         return deletedUserDto;
     }
     @Override

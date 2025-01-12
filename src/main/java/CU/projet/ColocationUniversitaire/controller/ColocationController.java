@@ -47,17 +47,13 @@ public class ColocationController {
 
     @PutMapping("/annuler/{logementId}")
     public ResponseEntity<String> annulerColocation(@PathVariable("logementId") Integer logementId) {
-        // Récupérer l'ApiResponse de la méthode annulerColocation du service
         ApiResponse<String> response = colocationService.annulerColocation(logementId);
 
-        // Accéder au message dans ApiResponse et vérifier s'il est positif
         String responseMessage = response.getMessage();
 
         if (responseMessage.equals("La colocation a été annulée avec succès.")) {
-            // Si la colocation est annulée avec succès, on renvoie un code HTTP 200
             return ResponseEntity.ok(responseMessage);
         } else {
-            // Si aucune colocation active n'a été trouvée, on renvoie un code HTTP 404
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseMessage);
         }
     }

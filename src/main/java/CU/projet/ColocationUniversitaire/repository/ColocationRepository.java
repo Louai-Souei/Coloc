@@ -15,7 +15,6 @@ public interface ColocationRepository extends JpaRepository<Colocation, Integer>
 
     List<Colocation> findByColocataire(User colocataire);
 
-    // Ajouter une méthode pour récupérer les colocataires d'un logement
     @Query("SELECT c.colocataire FROM Colocation c WHERE c.logement.id = :logementId")
     List<User> findColocatairesByLogementId(@Param("logementId") Integer logementId);
 

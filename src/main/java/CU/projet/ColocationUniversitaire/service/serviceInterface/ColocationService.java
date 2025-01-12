@@ -16,7 +16,6 @@ public interface ColocationService {
     ApiResponse<List<Map<String, Object>>> getHistoriqueColocations();
     Optional<Colocation> findByColocataireAndLogementIdAndActiveTrue(User colocataire, Integer logementId);
 
-    // Modifié pour retourner directement un String
     ApiResponse<String> annulerColocation(Integer logementId);
 }
 

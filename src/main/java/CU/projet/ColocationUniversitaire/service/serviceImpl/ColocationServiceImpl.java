@@ -53,10 +53,8 @@ public class ColocationServiceImpl implements ColocationService {
 
         colocationRepository.save(colocation);
 
-        // Décrémentez le nombre de places libres
         logementExistant.setNombrePlaceLibre(logementExistant.getNombrePlaceLibre() - 1);
 
-        // Vérifiez si le logement devient indisponible
         if (logementExistant.getNombrePlaceLibre() == 0) {
             logementExistant.setDisponible(false);
         }
@@ -73,20 +71,16 @@ public class ColocationServiceImpl implements ColocationService {
         Optional<User> colocataireOpt = userRepository.findByEmail(username);
         User colocataire = colocataireOpt.orElseThrow(() -> new RuntimeException("Utilisateur actif introuvable."));
 
-        // Récupération des colocations
         List<Colocation> colocations = colocationRepository.findByColocataire(colocataire);
 
-        // Construire une réponse enrichie
         List<Map<String, Object>> result = colocations.stream().map(colocation -> {
             Map<String, Object> enrichedData = new HashMap<>();
 
-            // Ajouter les données du DTO
             enrichedData.put("id", colocation.getId());
             enrichedData.put("colocataire", new UserDto(colocation.getColocataire()));
             enrichedData.put("active", colocation.isActive());
             enrichedData.put("logementId", colocation.getLogement().getId());
 
-            // Ajouter les informations détaillées du logement
             Logement logement = colocation.getLogement();
             enrichedData.put("logementDetails", Map.of(
                     "adresse", logement.getAdresse(),
@@ -94,10 +88,8 @@ public class ColocationServiceImpl implements ColocationService {
                     "description", logement.getDescription()
             ));
 
-            // Récupérer la liste des colocataires pour chaque logement
             List<User> colocataires = colocationRepository.findColocatairesByLogementId(logement.getId());
 
-            // Convertir les colocataires en UserDto
             List<UserDto> colocatairesDto = colocataires.stream()
                     .map(UserDto::new)
                     .collect(Collectors.toList());

@@ -22,7 +22,6 @@ public class LogementController {
 
     private final LogementService logementService;
 
-    // Create a new logement
     @PostMapping("/new-logement")
     public LogementDto createLogement(
             @RequestParam("adresse") String adresse,
@@ -51,39 +50,33 @@ public class LogementController {
         logementDto.setNombrePlaceLibre(nombrePlaceLibre);
         logementDto.setDisponible(disponible);
 
-        // Appeler le service pour enregistrer le logement avec les photos
         return logementService.createNewLogement(logementDto, photos);
     }
 
-    // Get all available logements
     @GetMapping("/available")
     public List<LogementDto> getAllAvailableLogements() {
         log.info("Fetching all available logements");
         return logementService.getAllAvailableLogements();
     }
 
-    // Get logement by ID
     @GetMapping("/{id}")
     public LogementDto getLogementById(@PathVariable Integer id) {
         log.info("Fetching logement with ID: {}", id);
         return logementService.getLogementById(id);
     }
 
-    // Update a logement by ID
     @PutMapping("/{id}")
     public LogementDto updateLogement(@PathVariable Integer id, @RequestBody LogementDto logementDto) {
         log.info("Updating logement with ID: {}", id);
         return logementService.updateLogement(id, logementDto);
     }
 
-    // Delete a logement by ID
     @DeleteMapping("/{id}")
     public void deleteLogement(@PathVariable Integer id) {
         log.info("Deleting logement with ID: {}", id);
         logementService.deleteLogement(id);
     }
 
-    // Filter logements by date and number of available places
     @GetMapping("/filter")
     public List<LogementDto> filterLogements(
             @RequestParam(value = "prix", required = false) Double prix,

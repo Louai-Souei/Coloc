@@ -37,7 +37,6 @@ public class UserController {
 
     @GetMapping("/profile")
     public ResponseEntity<User> getUserProfile() {
-        // Appel du service pour récupérer le profil utilisateur à partir du token
         User user = userService.getUserProfile();
         return ResponseEntity.ok(user);
     }
@@ -55,7 +54,6 @@ public class UserController {
             @RequestParam(value = "animauxAcceptes", required = false) Boolean animauxAcceptes
     ) throws IOException {
 
-        // Créez un UserDto avec les paramètres nécessaires
         UserDto updatedUserDto = new UserDto();
         updatedUserDto.setNumTel(numTel);
         updatedUserDto.setBudget(budget);
@@ -66,10 +64,8 @@ public class UserController {
         updatedUserDto.setFumeur(fumeur);
         updatedUserDto.setAnimauxAcceptes(animauxAcceptes);
 
-        // Appelez la méthode du service pour mettre à jour le profil de l'utilisateur
         ApiResponse<UserDto> response = userService.updateUserProfile(updatedUserDto, photoFile);
 
-        // Retourner la réponse API
         return ResponseEntity.ok(response);
     }
 
@@ -85,15 +81,12 @@ public class UserController {
             @RequestParam(required = false) String typelogementprefere,
             @RequestParam(required = false) String localisationprefere
     ) {
-        // Construire l'objet UserSearchCriteria
         UserSearchCriteria criteria = new UserSearchCriteria(
                 ageMin, ageMax, sexe, fumeur, animauxAcceptes, budgetMin, budgetMax, typelogementprefere, localisationprefere
         );
 
-        // Appeler le service
         ApiResponse<List<UserDto>> response = userService.searchUsers(criteria);
 
-        // Retourner la réponse
         return ResponseEntity.ok(response);
     }
 

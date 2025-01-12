@@ -23,7 +23,7 @@ public class ImageController {
 
         FileSystemResource fileSystemResource = new FileSystemResource(file);
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_TYPE, "image/jpeg")  // ou le type MIME approprié
+                .header(HttpHeaders.CONTENT_TYPE, "image/jpeg")
                 .body(fileSystemResource);
     }
 }
