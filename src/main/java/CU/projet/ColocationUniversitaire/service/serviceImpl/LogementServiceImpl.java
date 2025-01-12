@@ -76,6 +76,15 @@ public class LogementServiceImpl implements LogementService {
     }
 
     @Override
+    public List<LogementDto> getAllLogements() {
+        List<Logement> logements = logementRepository.findAll();
+        return logements.stream()
+                .map(LogementDto::new)
+                .collect(Collectors.toList());
+    }
+
+
+    @Override
     public List<LogementDto> getAllAvailableLogements() {
         List<Logement> logements = logementRepository.findAll();
         return logements.stream()

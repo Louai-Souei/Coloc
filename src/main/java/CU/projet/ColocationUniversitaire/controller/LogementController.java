@@ -93,6 +93,12 @@ public class LogementController {
         return logementService.filterLogements(prix, adresse, equipDispo);
     }
 
+    @GetMapping("/all")
+    public List<LogementDto> getAllLogements() {
+        log.info("Fetching all logements for admin");
+        return logementService.getAllLogements();
+    }
+
 
     // Get logements by localisation
     @GetMapping("/localisation")
