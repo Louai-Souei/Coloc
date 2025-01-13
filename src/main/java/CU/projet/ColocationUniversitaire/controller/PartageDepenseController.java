@@ -5,6 +5,7 @@ import CU.projet.ColocationUniversitaire.dto.PartageDepenseDto;
 import CU.projet.ColocationUniversitaire.service.serviceInterface.PartageDepenseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 public class PartageDepenseController {
 
     private final PartageDepenseService partageDepenseService;
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'COLOCATAIRE')")
 
     @PostMapping("/ajouter/{logementId}")
     public ResponseEntity<ApiResponse<PartageDepenseDto>> ajouterPartageDepense(

@@ -6,6 +6,7 @@ import CU.projet.ColocationUniversitaire.service.serviceInterface.ColocationServ
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +20,8 @@ public class ColocationController {
     private final ColocationService colocationService;
 
     @PostMapping("/{logementId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'COLOCATAIRE')")
+
     public ResponseEntity<ApiResponse<String>> ajouterColocationPourUtilisateurActif(
             @PathVariable Integer logementId
     ) {
@@ -32,6 +35,7 @@ public class ColocationController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @PreAuthorize("hasAnyRole('COLOCATAIRE')")
     @GetMapping("/historique")
     public ResponseEntity<ApiResponse<List<Map<String, Object>>>> getHistoriqueColocations() {
         ApiResponse<List<Map<String, Object>>> response = colocationService.getHistoriqueColocations();
@@ -44,7 +48,7 @@ public class ColocationController {
     }
 
 
-
+    @PreAuthorize("hasAnyRole('COLOCATAIRE')")
     @PutMapping("/annuler/{logementId}")
     public ResponseEntity<String> annulerColocation(@PathVariable("logementId") Integer logementId) {
         ApiResponse<String> response = colocationService.annulerColocation(logementId);

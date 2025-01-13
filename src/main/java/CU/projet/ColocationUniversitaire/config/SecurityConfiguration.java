@@ -44,7 +44,9 @@ public class SecurityConfiguration {public static final String[] WHITE_LIST_URL 
 						auth
 								.requestMatchers(WHITE_LIST_URL).permitAll()
 								.requestMatchers(HttpMethod.DELETE, "/logement/**").hasAnyRole(ADMIN.name(), PROPRIETAIRE.name() , COLOCATAIRE.name())
-                                //.requestMatchers(HttpMethod.GET, "/task/load/all").hasAnyAuthority(ADMIN_READ.name())
+								.requestMatchers(HttpMethod.GET, "users/active-user-stats").hasRole(ADMIN.name())
+								.requestMatchers(HttpMethod.GET, "colocations/created-colocations-stats").hasRole(ADMIN.name())
+
 								.anyRequest().authenticated()
 				)
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)

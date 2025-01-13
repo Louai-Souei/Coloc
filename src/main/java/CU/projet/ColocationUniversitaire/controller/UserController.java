@@ -43,10 +43,14 @@ public class UserController {
         User user = userService.getUserProfile();
         return ResponseEntity.ok(user);
     }
+
+    @PreAuthorize("hasAnyRole('COLOCATAIRE')")
     @GetMapping("/suggestions")
     public ApiResponse<List<UserDto>> getSuggestedMatches() {
         return userService.getSuggestedMatches();
     }
+
+
     @PutMapping("/profile")
     public ResponseEntity<ApiResponse<UserDto>> updateProfile(
             @RequestPart(value = "photo", required = false) MultipartFile photoFile,
@@ -75,6 +79,9 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+
+
+    @PreAuthorize("hasAnyRole('COLOCATAIRE')")
     @GetMapping("/search")
     public ResponseEntity<ApiResponse<List<UserDto>>> searchUsers(
             @RequestParam(required = false) Integer ageMin,
@@ -95,6 +102,8 @@ public class UserController {
 
         return ResponseEntity.ok(response);
     }
+
+    @PreAuthorize("hasAnyRole('ADMIN')")
 
     @DeleteMapping("/{id}")
     public ResponseEntity<UserDto> deleteUser(@PathVariable Integer id) {

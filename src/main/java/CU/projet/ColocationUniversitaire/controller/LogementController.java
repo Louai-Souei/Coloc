@@ -94,7 +94,6 @@ public class LogementController {
     }
 
 
-    // Get logements by localisation
     @GetMapping("/localisation")
     public List<LogementDto> getLogementsByLocalisation(@RequestParam("localisation") String localisation) {
         log.info("Fetching logements by localisation: {}", localisation);
