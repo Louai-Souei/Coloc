@@ -1,3 +1,5 @@
+
+
 package CU.projet.ColocationUniversitaire.controller.auth;
 
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,7 +20,7 @@ public class AuthenticationService {
 	private final PasswordEncoder passwordEncoder;
 	private final JwtService jwtService;
 	private final AuthenticationManager authenticationManager;
-	
+
 	public AuthenticationResponse register(RegisterRequest request) {
 
 
@@ -31,7 +33,7 @@ public class AuthenticationService {
 				.build();
 		repository.save(user);
 		var jwtToken = jwtService.generateToken(user);
-		
+
 		return AuthenticationResponse.builder()
 				.token(jwtToken)
 				.build();
@@ -43,13 +45,14 @@ public class AuthenticationService {
 				new UsernamePasswordAuthenticationToken(
 						request.getEmail(),
 						request.getPassword()
-						)
-				);
+				)
+		);
 		var user = repository.findByEmail(request.getEmail())
 				.orElseThrow();
-        var jwtToken = jwtService.generateToken(user);
+		var jwtToken = jwtService.generateToken(user);
 		return AuthenticationResponse.builder()
 				.token(jwtToken)
+				.userRole(user.getRole().name())
 				.build();
 	}
 
