@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,5 +43,13 @@ public interface UserRepository extends JpaRepository<User, Integer> {
                                    @Param("budgetMax") Double budgetMax,
                                    @Param("fumeur") Boolean fumeur,
                                    @Param("animauxAcceptes") Boolean animauxAcceptes);
+
+    @Query("""
+            SELECT COUNT(DISTINCT u.id)
+            FROM User u
+            WHERE u.loginDate BETWEEN :startDate AND :endDate
+            """)
+    Long countActiveUsers(Date startDate, Date endDate);
+
 
 }

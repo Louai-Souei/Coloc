@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 public interface UserService {
     ApiResponse<List<UserDto>> getAllUsers();
@@ -18,5 +19,5 @@ public interface UserService {
     ApiResponse<UserDto> addUser(UserDto userDto);
 
 
-
+    Map<String, Long> getActiveUserStats();
 }

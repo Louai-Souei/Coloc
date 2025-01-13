@@ -17,5 +17,7 @@ public interface ColocationService {
     Optional<Colocation> findByColocataireAndLogementIdAndActiveTrue(User colocataire, Integer logementId);
 
     ApiResponse<String> annulerColocation(Integer logementId);
+
+    Map<String, Long> getCreatedColocationsStats();
 }
 

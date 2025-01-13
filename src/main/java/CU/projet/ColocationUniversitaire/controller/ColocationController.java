@@ -57,5 +57,16 @@ public class ColocationController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseMessage);
         }
     }
+
+    @GetMapping("/created-colocations-stats")
+    public ResponseEntity<Object> getCreatedColocationsStats() {
+        try {
+            Map<String, Long> stats = colocationService.getCreatedColocationsStats();
+            return ResponseEntity.ok(stats);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Failed to fetch created colocations stats.");
+        }
+    }
+
 }
 

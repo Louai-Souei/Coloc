@@ -8,15 +8,23 @@ import CU.projet.ColocationUniversitaire.entity.User;
 import CU.projet.ColocationUniversitaire.repository.UserRepository;
 import CU.projet.ColocationUniversitaire.service.serviceInterface.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -123,6 +131,35 @@ public class UserServiceImpl implements UserService {
         return new ApiResponse<>("Utilisateur créé avec succès", savedUserDto);
     }
 
+    @Override
+    public Map<String, Long> getActiveUserStats() {
+        try {
+            LocalDate startDate = LocalDate.now().minusWeeks(4);
+            LocalDate endDate = LocalDate.now().plusDays(1);
+
+            Map<String, Long> userStats = new TreeMap<>();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+            for (int i = 0; i < 4; i++) {
+                LocalDate weekStart = startDate.plusWeeks(i);
+                LocalDate weekEnd = (i == 3)
+                        ? weekStart.plusDays(7).minusDays(1)
+                        : weekStart.plusDays(6);
+
+                Date start = Date.from(weekStart.atStartOfDay(ZoneId.systemDefault()).toInstant());
+                Date end = Date.from(weekEnd.atTime(23, 59, 59).atZone(ZoneId.systemDefault()).toInstant());
+
+                Long count = userRepository.countActiveUsers(start, end);
+
+                String dateRangeKey = weekStart.format(formatter) + " -->    " + weekEnd.format(formatter);
+                userStats.put(dateRangeKey, count);
+            }
+            
+            return userStats;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to fetch active user stats.");
+        }
+    }
 
 
 

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,6 +20,13 @@ public interface ColocationRepository extends JpaRepository<Colocation, Integer>
     List<User> findColocatairesByLogementId(@Param("logementId") Integer logementId);
 
     Optional<Colocation> findByColocataireAndLogementIdAndActiveTrue(User colocataire, Integer logementId);
+
+    @Query("""
+            SELECT COUNT(DISTINCT c.id)
+            FROM Colocation c
+            WHERE c.createdAt BETWEEN :startDate AND :endDate
+            """)
+    Long countCreatedColocations(Date startDate, Date endDate);
 
 }
 

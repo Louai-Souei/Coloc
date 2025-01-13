@@ -6,6 +6,7 @@ import CU.projet.ColocationUniversitaire.dto.UserSearchCriteria;
 import CU.projet.ColocationUniversitaire.entity.User;
 import CU.projet.ColocationUniversitaire.service.serviceInterface.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +14,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
@@ -94,6 +97,16 @@ public class UserController {
     public ResponseEntity<UserDto> deleteUser(@PathVariable Integer id) {
         UserDto deletedUser = userService.deleteUser(id);
         return ResponseEntity.ok(deletedUser);
+    }
+
+    @GetMapping("/active-user-stats")
+    public ResponseEntity<Object> getActiveUserStats() {
+        try {
+            Map<String, Long> stats = userService.getActiveUserStats();
+            return ResponseEntity.ok(stats);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Failed to fetch active user stats.");
+        }
     }
 
 
