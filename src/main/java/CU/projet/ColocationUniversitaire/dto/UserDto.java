@@ -36,10 +36,10 @@ public class UserDto {
         this.typelogementprefere = user.getTypelogementprefere();
         this.localisationprefere = user.getLocalisationprefere();
         this.role = user.getRole();
-        this.age = user.getAge(); // Ajouté
-        this.sexe = user.getSexe(); // Ajouté
-        this.fumeur = user.getFumeur(); // Ajouté
-        this.animauxAcceptes = user.getAnimauxAcceptes(); // Ajouté
+        this.age = user.getAge();
+        this.sexe = user.getSexe();
+        this.fumeur = user.getFumeur();
+        this.animauxAcceptes = user.getAnimauxAcceptes();
     }
 
     public UserDto(String numTel, Double budget, String typelogementprefere, String localisationprefere) {

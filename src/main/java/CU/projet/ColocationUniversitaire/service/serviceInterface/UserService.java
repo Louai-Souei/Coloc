@@ -17,6 +17,8 @@ public interface UserService {
     ApiResponse<List<UserDto>> searchUsers(UserSearchCriteria criteria);
     UserDto deleteUser(Integer id);
     ApiResponse<UserDto> addUser(UserDto userDto);
+    ApiResponse<List<UserDto>> getSuggestedMatches();
+
 
 
     Map<String, Long> getActiveUserStats();

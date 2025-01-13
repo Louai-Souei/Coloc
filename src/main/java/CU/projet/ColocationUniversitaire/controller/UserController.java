@@ -43,7 +43,10 @@ public class UserController {
         User user = userService.getUserProfile();
         return ResponseEntity.ok(user);
     }
-
+    @GetMapping("/suggestions")
+    public ApiResponse<List<UserDto>> getSuggestedMatches() {
+        return userService.getSuggestedMatches();
+    }
     @PutMapping("/profile")
     public ResponseEntity<ApiResponse<UserDto>> updateProfile(
             @RequestPart(value = "photo", required = false) MultipartFile photoFile,
@@ -108,6 +111,9 @@ public class UserController {
             return ResponseEntity.badRequest().body("Failed to fetch active user stats.");
         }
     }
+
+
+
 
 
 

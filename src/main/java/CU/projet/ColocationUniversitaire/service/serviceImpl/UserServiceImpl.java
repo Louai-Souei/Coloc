@@ -3,8 +3,11 @@ package CU.projet.ColocationUniversitaire.service.serviceImpl;
 import CU.projet.ColocationUniversitaire.dto.ApiResponse;
 import CU.projet.ColocationUniversitaire.dto.UserDto;
 import CU.projet.ColocationUniversitaire.dto.UserSearchCriteria;
+import CU.projet.ColocationUniversitaire.entity.Match;
 import CU.projet.ColocationUniversitaire.entity.Role;
 import CU.projet.ColocationUniversitaire.entity.User;
+import CU.projet.ColocationUniversitaire.entity.UserScore;
+import CU.projet.ColocationUniversitaire.repository.MatchRepository;
 import CU.projet.ColocationUniversitaire.repository.UserRepository;
 import CU.projet.ColocationUniversitaire.service.serviceInterface.UserService;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +33,7 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     @Autowired
     private final UserRepository userRepository;
+    private final MatchRepository matchRepository;
 
 
     @Override
@@ -130,6 +134,52 @@ public class UserServiceImpl implements UserService {
         UserDto savedUserDto = new UserDto(user);
         return new ApiResponse<>("Utilisateur créé avec succès", savedUserDto);
     }
+    public ApiResponse<List<UserDto>> getSuggestedMatches() {
+        User currentUser = userRepository.findByEmail(
+                SecurityContextHolder.getContext().getAuthentication().getName()
+        ).orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
+
+        List<User> potentialMatches = userRepository.findAll()
+                .stream()
+                .filter(user -> user.getRole() == Role.COLOCATAIRE)
+                .filter(user -> !user.getId().equals(currentUser.getId()))
+                .collect(Collectors.toList());
+
+        List<UserScore> userScores = potentialMatches.stream()
+                .map(user -> {
+                    double score = 0;
+                    double totalCriteria = 0;
+
+                    if (currentUser.getTypelogementprefere() != null && user.getTypelogementprefere() != null &&
+                            user.getTypelogementprefere().equalsIgnoreCase(currentUser.getTypelogementprefere())) {
+                        score += 1;
+                    }
+                    totalCriteria++;
+
+                    if (currentUser.getLocalisationprefere() != null && user.getLocalisationprefere() != null &&
+                            user.getLocalisationprefere().equalsIgnoreCase(currentUser.getLocalisationprefere())) {
+                        score += 1;
+                    }
+                    totalCriteria++;
+
+                    if (currentUser.getBudget() != null && user.getBudget() != null &&
+                            user.getBudget() >= currentUser.getBudget() * 0.8 &&
+                            user.getBudget() <= currentUser.getBudget() * 1.2) {
+                        score += 1;
+                    }
+                    totalCriteria++;
+
+                    if (currentUser.getFumeur() != null && user.getFumeur() != null &&
+                            user.getFumeur().equals(currentUser.getFumeur())) {
+                        score += 1;
+                    }
+                    totalCriteria++;
+
+                    if (currentUser.getAnimauxAcceptes() != null && user.getAnimauxAcceptes() != null &&
+                            user.getAnimauxAcceptes().equals(currentUser.getAnimauxAcceptes())) {
+                        score += 1;
+                    }
+                    totalCriteria++;
 
     @Override
     public Map<String, Long> getActiveUserStats() {
@@ -161,7 +211,27 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+                    double percentage = (score / totalCriteria) * 100;
 
+
+                    Match match = new Match();
+                    match.setUser(currentUser);
+                    match.setMatchedUser(user);
+                    match.setMatchScore(percentage);
+                    matchRepository.save(match);
+
+                    return new UserScore(user, percentage);
+                })
+                .collect(Collectors.toList());
+
+        userScores.sort((us1, us2) -> Double.compare(us2.getScore(), us1.getScore()));
+
+        List<UserDto> matchedDtos = userScores.stream()
+                .map(userScore -> new UserDto(userScore.getUser()))
+                .collect(Collectors.toList());
+
+        return new ApiResponse<>("Correspondances suggérées récupérées avec succès", matchedDtos);
+    }
 
 
 }
