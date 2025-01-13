@@ -1,6 +1,7 @@
 package CU.projet.ColocationUniversitaire.repository;
 
 import CU.projet.ColocationUniversitaire.entity.Depense;
+import CU.projet.ColocationUniversitaire.entity.Logement;
 import CU.projet.ColocationUniversitaire.entity.PartageDepense;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

@@ -42,5 +42,21 @@ public interface UserRepository extends JpaRepository<User, Integer> {
                                    @Param("budgetMax") Double budgetMax,
                                    @Param("fumeur") Boolean fumeur,
                                    @Param("animauxAcceptes") Boolean animauxAcceptes);
+    @Query("SELECT u FROM User u WHERE " +
+            "(:typelogementprefere IS NULL OR u.typelogementprefere = :typelogementprefere) AND " +
+            "(:localisationprefere IS NULL OR u.localisationprefere = :localisationprefere) AND " +
+            "(:budgetMin IS NULL OR u.budget >= :budgetMin) AND " +
+            "(:budgetMax IS NULL OR u.budget <= :budgetMax) AND " +
+            "(:fumeur IS NULL OR u.fumeur = :fumeur) AND " +
+            "(:animauxAcceptes IS NULL OR u.animauxAcceptes = :animauxAcceptes)")
+    List<User> findPotentialMatches(
+            @Param("typelogementprefere") String typelogementprefere,
+            @Param("localisationprefere") String localisationprefere,
+            @Param("budgetMin") Double budgetMin,
+            @Param("budgetMax") Double budgetMax,
+            @Param("fumeur") Boolean fumeur,
+            @Param("animauxAcceptes") Boolean animauxAcceptes
+    );
+
 
 }

@@ -1,6 +1,7 @@
 package CU.projet.ColocationUniversitaire.service.serviceImpl;
 
 import CU.projet.ColocationUniversitaire.dto.ApiResponse;
+import CU.projet.ColocationUniversitaire.dto.DepenseDto;
 import CU.projet.ColocationUniversitaire.dto.PartageDepenseDto;
 import CU.projet.ColocationUniversitaire.entity.*;
 import CU.projet.ColocationUniversitaire.repository.DepenseRepository;
@@ -68,6 +69,7 @@ public class PartageDepenseServiceImpl implements PartageDepenseService {
             return new ApiResponse<>("Échec de l'ajout du partage de dépense : " + e.getMessage(), null);
         }
     }
+
 
 
 

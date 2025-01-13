@@ -32,7 +32,6 @@ public class User implements UserDetails {
     @Lob
     @Column(name = "photo_url", length = 1000000)
     private byte[] photo;
-
     private String email;
     private String num_tel;
     private Double budget;
@@ -90,4 +89,7 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+    @OneToMany(mappedBy = "matchedUser", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Match> matches = new ArrayList<>();
+
 }
