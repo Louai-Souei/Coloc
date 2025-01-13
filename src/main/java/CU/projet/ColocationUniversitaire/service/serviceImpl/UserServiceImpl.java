@@ -180,6 +180,28 @@ public class UserServiceImpl implements UserService {
                         score += 1;
                     }
                     totalCriteria++;
+                    double percentage = (score / totalCriteria) * 100;
+
+
+                    Match match = new Match();
+                    match.setUser(currentUser);
+                    match.setMatchedUser(user);
+                    match.setMatchScore(percentage);
+                    matchRepository.save(match);
+
+                    return new UserScore(user, percentage);
+                })
+                .collect(Collectors.toList());
+
+        userScores.sort((us1, us2) -> Double.compare(us2.getScore(), us1.getScore()));
+
+        List<UserDto> matchedDtos = userScores.stream()
+                .map(userScore -> new UserDto(userScore.getUser()))
+                .collect(Collectors.toList());
+
+        return new ApiResponse<>("Correspondances suggérées récupérées avec succès", matchedDtos);
+    }
+
 
     @Override
     public Map<String, Long> getActiveUserStats() {
@@ -204,34 +226,13 @@ public class UserServiceImpl implements UserService {
                 String dateRangeKey = weekStart.format(formatter) + " -->    " + weekEnd.format(formatter);
                 userStats.put(dateRangeKey, count);
             }
-            
+
             return userStats;
         } catch (Exception e) {
             throw new RuntimeException("Failed to fetch active user stats.");
         }
     }
 
-                    double percentage = (score / totalCriteria) * 100;
-
-
-                    Match match = new Match();
-                    match.setUser(currentUser);
-                    match.setMatchedUser(user);
-                    match.setMatchScore(percentage);
-                    matchRepository.save(match);
-
-                    return new UserScore(user, percentage);
-                })
-                .collect(Collectors.toList());
-
-        userScores.sort((us1, us2) -> Double.compare(us2.getScore(), us1.getScore()));
-
-        List<UserDto> matchedDtos = userScores.stream()
-                .map(userScore -> new UserDto(userScore.getUser()))
-                .collect(Collectors.toList());
-
-        return new ApiResponse<>("Correspondances suggérées récupérées avec succès", matchedDtos);
-    }
 
 
 }
